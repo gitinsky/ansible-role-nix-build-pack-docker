@@ -5,5 +5,11 @@
 - name: install docker-py
   pip: name=docker-py
 
+- name: check if nix-builder image exists
+  shell: docker images | grep nix-builder
+  register: result
+  ignore_errors: true
+
 - name: build nix-builder image
   shell: cd /root/nix-build-pack-docker && docker build -t nix-builder -f nix-builder.docker --rm=true --force-rm=true --no-cache=true .
+  when: result|failed
