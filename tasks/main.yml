@@ -13,3 +13,12 @@
 - name: build nix-builder image
   shell: cd /root/nix-build-pack-docker && docker build -t nix-builder -f nix-builder.docker --rm=true --force-rm=true --no-cache=true .
   when: result|failed
+
+- name: check if nix-store container exists
+  shell: docker ps -a | grep nix-store
+  register: result
+  ignore_errors: true
+
+- name: create a nix-store container
+  shell: docker create --name nix-store nix-builder
+  when: result|failed
